@@ -1,6 +1,0 @@
-var mqtt = require('mqtt')
-var lodsash = require('lodash')
-var twilio = require('twilio')
-console.log(mqtt)
-console.log(lodsash)
-console.log(twilio)
