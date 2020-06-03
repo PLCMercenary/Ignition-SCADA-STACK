@@ -1,0 +1,76 @@
+version: '3.1'
+services:
+  gateway:
+    image: kcollins/ignition:latest  # You can change `latest` to a specific version, e.g. `8.0.5`
+    ports:
+      - 8088
+    networks:
+      default:
+      backend:
+        ipv4_address: 172.30.0.5
+        aliases:
+          - a1gateway        
+    stop_grace_period: 30s
+    secrets:
+      - gateway-password
+    volumes:
+            #  - ./gateway_backup.gwbk:/restore.gwbk
+      - gateway_data:/var/lib/ignition
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
+    environment:
+      GATEWAY_ADMIN_PASSWORD_FILE: /run/secrets/gateway-password
+      VIRTUAL_HOST: gateway.scada-go.com
+      VIRTUAL_PORT: 8088 
+      LETSENCRYPT_HOST: gateway.scada-go.com
+      LETSENCRYPT_EMAIL: wally.hudnall@gmail.com                  
+
+  db:
+    image: postgres:12
+    ports:
+      # Note that the 5432 port doesn't need to be published here for the gateway container to connect, 
+      # only for external connectivity to the database.
+      - 5432
+    networks:
+      default:
+      backend:
+        ipv4_address: 172.30.0.4
+        aliases:
+          - a1gateway    
+    volumes:
+     - db_data:/var/lib/postgresql/data
+     - ./db-init:/docker-entrypoint-initdb.d
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
+    secrets:
+      - postgres-password
+    environment:
+      # See https://hub.docker.com/_/postgres/ for more information
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres-password
+      POSTGRES_DB: ignition
+      POSTGRES_USER: ignition
+
+secrets:
+  postgres-password:
+    file: ./secrets/POSTGRES_PASSWORD
+  gateway-password:
+    file: ./secrets/GATEWAY_PASSWORD
+
+volumes:
+  gateway_data:
+  db_data:
+
+networks:
+  default:
+    external:
+      name: nginx-proxy
+  backend:
+    external:
+      name: container-comm    
+

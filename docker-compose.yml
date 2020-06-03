@@ -1,0 +1,81 @@
+version: "3.7"
+services:
+  db:
+    image: postgres:12.2
+    restart: always
+    environment:
+      POSTGRES_DB: ccs-pgdata
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: qwerty789
+      PGDATA: /var/lib/postgresql/data
+    networks:
+      default:
+          #  ipv4_address: 172.19.0.3
+      backend: 
+        # ipv4_address: 172.30.0.3
+        aliases:
+          - histdb
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "5432"
+
+  universe:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: global-namespace
+      POSTGRES_USER: globaluser
+      POSTGRES_PASSWORD: qwerty789
+      PGDATA: /var/lib/postgresql/data
+    networks:
+      default:
+          #  ipv4_address: 172.19.0.3
+        aliases:
+          - namespace
+      backend: 
+        # ipv4_address: 172.30.0.3
+        aliases:
+          - namespace
+    volumes:
+      - ./volumes/uns/data/db-data:/var/lib/postgresql/data
+    ports:
+      - "5432"
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: scada@cowanconsultingservices.com 
+      PGADMIN_DEFAULT_PASSWORD: qwerty789
+      PGADMIN_LISTEN_PORT: 80
+      VIRTUAL_HOST: pgadmin.scada-go.com
+      VIRTUAL_PORT: 80
+      LETSENCRYPT_HOST: pgadmin.scada-go.com
+      LETSENCRYPT_EMAIL: wally.hudnall@gmail.com
+    networks:
+      default:
+          #ipv4_address: 172.19.0.2
+      backend: 
+      # ipv4_address: 172.30.0.2
+        aliases:
+          - pgadmin
+    ports:
+      - "8000:80"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    links:
+      - "db:pgHist"
+
+volumes:
+  db-data:
+  pgadmin-data:
+  
+networks:
+  default:
+    external:
+      name: nginx-proxy
+  backend:
+    external:
+      name: container-comm
+

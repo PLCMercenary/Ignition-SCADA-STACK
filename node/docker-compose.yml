@@ -1,0 +1,85 @@
+version: "3.3"
+services:
+  mqtt0:
+    build: vernemq/
+    networks:
+      default:
+      backend:
+        aliases:
+          - vmq0
+          - mqtt0  
+    environment:
+      DOCKER_VERNEMQ_ACCEPT_EULA: "yes"
+      DOCKER_VERNEMQ_ALLOW_ANONYMOUS: "off"
+      DOCKER_VERNEMQ_PLUGINS__VMQ_ACL: "off"
+      DOCKER_VERNEMQ_PLUGINS__VMQ_DIVERSITY: "on"
+      DOCKER_VERNEMQ_PLUGINS__VMQ_PASSWD: "off"
+      DOCKER_VERNEMQ_USER_ROOT: "root"
+      DOCKER_VERNEMQ_VMQ_DIVERSITY__AUTH_POSTGRES__ENABLED: "on"
+      DOCKER_VERNEMQ_VMQ_DIVERSITY__POSTGRES__DATABASE: "vernemq"
+      DOCKER_VERNEMQ_VMQ_DIVERSITY__POSTGRES__HOST: "message_auth"
+      DOCKER_VERNEMQ_VMQ_DIVERSITY__POSTGRES__PASSWORD_HASH_METHOD: "crypt"
+      DOCKER_VERNEMQ_VMQ_DIVERSITY__POSTGRES__PASSWORD: "root"
+      DOCKER_VERNEMQ_VMQ_DIVERSITY__POSTGRES__PORT: "5432"
+      DOCKER_VERNEMQ_VMQ_DIVERSITY__POSTGRES__USER: "root"
+      VIRTUAL_HOST: ccsmqtt.scada-go.com
+      VIRTUAL_PORT: 8888
+      LETSENCRYPT_HOST: ccsmqtt.scada-go.com
+      LETSENCRYPT_EMAIL: wally.hudnall@gmail.com
+    ports:
+      - 2883:1883
+      - 8888
+    depends_on:
+      - message_auth
+
+        #  mqtt:
+        #    build: vernemq/
+        #    networks:
+        #      backend:
+        #    depends_on:
+        #      - mqtt0
+        #    environment:
+        #      DOCKER_VERNEMQ_ACCEPT_EULA: "yes"
+        #      DOCKER_VERNEMQ_ALLOW_ANONYMOUS: "off"
+        #      DOCKER_VERNEMQ_PLUGINS__VMQ_ACL: "off"
+        #      DOCKER_VERNEMQ_PLUGINS__VMQ_DIVERSITY: "on"
+        #      DOCKER_VERNEMQ_PLUGINS__VMQ_PASSWD: "off"
+        #      DOCKER_VERNEMQ_USER_ROOT: "root"
+        #      DOCKER_VERNEMQ_VMQ_DIVERSITY__AUTH_POSTGRES__ENABLED: "on"
+        #      DOCKER_VERNEMQ_VMQ_DIVERSITY__POSTGRES__DATABASE: "vernemq"
+        #      DOCKER_VERNEMQ_VMQ_DIVERSITY__POSTGRES__HOST: "message_auth"
+        #      DOCKER_VERNEMQ_VMQ_DIVERSITY__POSTGRES__PASSWORD_HASH_METHOD: "crypt"
+        #      DOCKER_VERNEMQ_VMQ_DIVERSITY__POSTGRES__PASSWORD: "root"
+        #      DOCKER_VERNEMQ_VMQ_DIVERSITY__POSTGRES__PORT: "5432"
+        #      DOCKER_VERNEMQ_VMQ_DIVERSITY__POSTGRES__USER: "root"
+        #      DOCKER_VERNEMQ_DISCOVERY_NODE: mqtt0_1
+        #    ports:
+        #      - 2884:1883
+
+  message_auth:
+    build: postgres/
+    networks:
+      backend:
+        aliases:
+          - mqttdb
+          - mqttauth 
+    environment:
+      POSTGRES_USER: "root"
+      POSTGRES_PASSWORD: "root"
+      POSTGRES_DB: "vernemq"
+    ports:
+      - 5432
+    volumes:
+      - postgresData:/var/lib/postgresql/data
+
+volumes:
+  postgresData:
+
+networks:
+  default:
+    external:
+      name: nginx-proxy
+  backend:
+    external:
+      name: container-comm
+ 

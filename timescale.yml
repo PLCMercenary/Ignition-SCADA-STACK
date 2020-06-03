@@ -1,0 +1,35 @@
+version: "3.7"
+services:
+  tsdb:
+    image: timescale/timescaledb:latest-pg12-oss
+    container_name: timescale
+    ports:
+      - "5432"
+    restart: always
+    environment:
+      TZ: America/Chicago
+      POSTGRES_USER: tsdb
+      POSTGRES_PASSWORD: ccs2020password
+      POSTGRES_DATABASE: sensors
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      default:
+        ipv4_address: 172.19.0.79
+        aliases: 
+          - tsdb0
+      backend:
+        ipv4_address: 172.30.0.79
+        aliases: 
+          - tsdb0
+          
+volumes:
+  db_data:
+
+networks:
+  default:
+    external:
+        name: nginx-proxy
+  backend:
+    external:
+        name: container-comm

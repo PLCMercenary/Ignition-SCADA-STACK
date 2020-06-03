@@ -1,0 +1,89 @@
+version: '3'
+services:
+  ouroboros:
+    container_name: ouroboros
+    hostname: ouroboros
+    image: pyouroboros/ouroboros
+    environment:
+      - CLEANUP=true
+      - INTERVAL=300
+      - LOG_LEVEL=info
+      - SELF_UPDATE=true
+      - TZ=America/Chicago
+      - VIRTUAL_HOST=ouroboros.scadadevs.com
+     # - VIRTUAL_PORT=389
+      - LETSENCRYPT_HOST=ouroboros.scadadevs.com
+      - LETSENCRYPT_EMAIL=twinflameautomatin@gmail.com  
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+  #  dns:
+  #    - 10.10.220.232
+  #    - 10.10.220.231
+    dns_search: ouroboros.scadadevs.com
+    networks:
+      default:
+        ipv4_address: 172.19.0.43
+        aliases:
+          - ouroboros
+      backend:
+        ipv4_address: 172.30.0.43
+        aliases:
+          - ouroboros
+    
+  ldap:
+    image: osixia/openldap
+    #image: adann0/openldap:armv7
+    container_name: dark_ldap
+  #  hostname: pione.dark.kow.is
+  #  domainname: pione.dark.kow.is
+    environment:
+      # Enable this after the initial bootstrap
+      # KEEP_EXISTING_CONFIG: "true"
+      LDAP_ORGANISATION: "SCADA2go"
+      LDAP_TLS_CRT_FILENAME: "server.crt"
+      LDAP_TLS_KEY_FILENAME: "server.key"
+      LDAP_TLS_CA_CRT_FILENAME: "SCADA2ca.crt"
+      LDAP_TLS_DH_PARAM_FILENAME: "dhparam.pem"
+      LDAP_DOMAIN: "scada-go.com"
+      LDAP_ADMIN_PASSWORD: "ccs2020!!"
+      LDAP_CONFIG_PASSWORD: "ccs2020!!"
+      LDAP_TLS_ENFORCE: "true"
+      LDAP_TLS_VERIFY_CLIENT: try
+      LDAP_REPLICATION: "true"
+      LDAP_REPLICATION_HOSTS: "#PYTHON2BASH:['ldap://darkness.scadadevs.com','ldap://light.scadadevs.com']"
+      VIRTUAL_HOST: darkness.scadadevs.com
+      VIRTUAL_PORT: 389
+      LETSENCRYPT_HOST: darkness.scadadevs.com
+      LETSENCRYPT_EMAIL: twinflameautomation@gmail.com  
+    volumes:
+      - ./data/bootstrap:/container/service/slapd/assets/config/bootstrap/ldif/custom
+      - ./data/certificates:/container/service/slapd/assets/certs
+      - ./data/database:/var/lib/ldap
+      - ./data/config:/etc/ldap/slapd.d
+    restart: unless-stopped
+    networks:
+      default:
+        ipv4_address: 172.19.0.44
+        aliases:
+          - ldap
+      backend:
+        ipv4_address: 172.30.0.44
+        aliases:
+          - ldap
+ #   dns:
+ #     - 10.10.220.232
+ #     - 10.10.220.231
+ #   dns_search: dark.kow.is
+    ports:
+      - "389:389"
+      - "636:636"
+    command: --copy-service
+
+networks:
+  default:
+    external:
+      name: nginx-proxy
+  backend:
+    external:
+      name: container-comm 
