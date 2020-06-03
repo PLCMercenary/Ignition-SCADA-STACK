@@ -1,0 +1,15 @@
+reg_address,reg_name,bit,point_name,alias_on,alias_off,parse,quantity
+30,Status,0,Head Switch On,On,Off,,1
+30,Status,1,PD Pump Command,On,Off,,1
+30,Status,2,PD Pump Running,On,Off,,1
+16,Tank Level,,,,,"[{""func"": ""float32ToNum""}]",2
+34,Suction Pressure,,,,,"[{""func"": ""float32ToNum""},{""func"": ""scale"", ""param"": 0.1}]",2
+36,Discharge Pressure,,,,,"[{""func"": ""float32ToNum""}]",2
+38,Vibration,,,,,"[{""func"": ""float32ToNum""}]",2
+40,Alarms,0,Tank H Alarm,Alarm,Normal,,1
+40,Alarms,1,Tank HH Alarm,Alarm,Normal,,1
+40,Alarms,2,Tank L Alarm,Alarm,Normal,,1
+40,Alarms,3,PD Fail to Start,Alarm,Normal,,1
+40,Alarms,4,Low Suction,Alarm,Normal,,1
+40,Alarms,5,High Discharge,Alarm,Normal,,1
+40,Alarms,6,Vibration,Alarm,Normal,,1

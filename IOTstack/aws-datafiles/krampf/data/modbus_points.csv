@@ -1,0 +1,68 @@
+reg_address,reg_name,group,bit,point_name,alias_on,alias_off,parse,quantity
+10,Tank 1 Level Feet (F),Levels,,,,,"[{""func"": ""float32ToNum""}]",2
+12,Tank 2 Level Feet (F),Levels,,,,,"[{""func"": ""float32ToNum""}]",2
+14,Suction Pressure 0-100 psi,Pressure,,,,,"[{""func"": ""float32ToNum""}]",2
+16,Injection Pressure 0-2000 psi,Pressure,,,,,"[{""func"": ""float32ToNum""}]",2
+18,Flow Rate,Flow,,,,,"[{""func"": ""float32ToNum""}]",2
+20,Totalizer,Flow,,,,,"[{""func"": ""float32ToNum""}]",2
+22,Tank Running Level,Running,,,,,"[{""func"": ""float32ToNum""}]",2
+26,Today Total,Total,,,,,"[{""func"": ""float32ToNum""}]",2
+28,Yesterday Total,Total,,,,,"[{""func"": ""float32ToNum""}]",2
+30,Status,Status,0,Charge Pump Running,Running,Stopped,,1
+30,Status,Status,2,PD1 Run Status,Running,Stopped,,1
+30,Status,Status,1,PD2 Run Status,Running,Stopped,,1
+30,Status,Status,3,PD3 Run Status,Running,Stopped,,1
+30,Status,Status,5,Head Switch Status,On,Off,,1
+30,Status,Status,6,AC Power OK,No,Okay,,1
+30,Status,Status,13,Tank 1 Selected,Selected,No,,1
+30,Status,Status,14,Tank 2 Selected,Selected,No,,1
+40,Status Alarms,Alarms,0,Charge Pump FTS,Alarm,Normal,,1
+40,Status Alarms,Alarms,1,PD2 FTS,Alarm,Normal,,1
+40,Status Alarms,Alarms,2,PD1 FTS,Alarm,Normal,,1
+40,Status Alarms,Alarms,3,PD3 FTS,Alarm,Normal,,1
+40,Status Alarms,Alarms,4,Charge FTS,Alarm,Normal,,1
+40,Status Alarms,Alarms,5,Head,Alarm,Normal,,1
+40,Status Alarms,Alarms,6,AC Power Fail,Alarm,Normal,,1
+40,Status Alarms,Alarms,7,Low Battery,Alarm,Normal,,1
+41,Tank Alarms,Alarms,0,Tank 1 High High,Alarm,Normal,,1
+41,Tank Alarms,Alarms,1,Tank 1 High,Alarm,Normal,,1
+41,Tank Alarms,Alarms,2,Tank 1 Low,Alarm,Normal,,1
+41,Tank Alarms,Alarms,3,Tank 1 Low Low,Alarm,Normal,,1
+41,Tank Alarms,Alarms,4,Tank 2 High High,Alarm,Normal,,1
+41,Tank Alarms,Alarms,5,Tank 2 High,Alarm,Normal,,1
+41,Tank Alarms,Alarms,6,Tank 2 Low,Alarm,Normal,,1
+41,Tank Alarms,Alarms,7,Tank 2 Low Low,Alarm,Normal,,1
+42,Pump Alarms,Alarms,0,PD Low Suction,Alarm,Normal,,1
+42,Pump Alarms,Alarms,1,Injection High Discharge,Alarm,Normal,,1
+42,Pump Alarms,Alarms,2,PD2 Low Oil,Alarm,Normal,,1
+42,Pump Alarms,Alarms,3,PD2 Vibration,Alarm,Normal,,1
+42,Pump Alarms,Alarms,4,PD2 FTS,Alarm,Normal,,1
+60,Tank HH Setpoint,Setpoints,,,,,"[{""func"": ""float32ToNum""}]",2
+62,Tank H Setpoint,Setpoints,,,,,"[{""func"": ""float32ToNum""}]",2
+64,Pump 2 Start Setpoint,Setpoints.Pump,,,,,"[{""func"": ""float32ToNum""}]",2
+66,Pump 2 Stop Setpoint,Setpoints.Pump,,,,,"[{""func"": ""float32ToNum""}]",2
+68,Tank Low Setpoint,Setpoints,,,,,"[{""func"": ""float32ToNum""}]",2
+70,Tank Low-Low Setpoint,Setpoints,,,,,"[{""func"": ""float32ToNum""}]",2
+72,Suction Low Setpoint,Setpoints,,,,,"[{""func"": ""float32ToNum""}]",2
+74,Injection Pressure High Setpoint,Setpoints,,,,,"[{""func"": ""float32ToNum""}]",2
+76,Pump 1 Start Setpoint,Setpoints.Pump,,,,,"[{""func"": ""float32ToNum""}]",2
+78,Pump 1 Stop Setpoint,Setpoints.Pump,,,,,"[{""func"": ""float32ToNum""}]",2
+80,Pump 3 Start Setpoint,Setpoints.Pump,,,,,"[{""func"": ""float32ToNum""}]",2
+82,Pump 3 StopSetpoint,Setpoints.Pump,,,,,"[{""func"": ""float32ToNum""}]",2
+90,VFD1 Alarms,Alarms,0,VFD1 High Discharge,Alarm,Normal,,1
+90,VFD1 Alarms,Alarms,1,VFD1 Low Discharge,Alarm,Normal,,1
+90,VFD1 Alarms,Alarms,2,VFD1 High Suction,Alarm,Normal,,1
+90,VFD1 Alarms,Alarms,3,VFD1 Low Suction,Alarm,Normal,,1
+90,VFD1 Alarms,Alarms,4,VFD1 Low Oil,Alarm,Normal,,1
+90,VFD1 Alarms,Alarms,5,VFD1 Low Lube,Alarm,Normal,,1
+90,VFD1 Alarms,Alarms,6,VFD1 Vibration,Alarm,Normal,,1
+90,VFD1 Alarms,Alarms,7,VFD1 Low Crank Case,Alarm,Normal,,1
+91,VFD2 Alarms,Alarms,0,VFD2 High Discharge,Alarm,Normal,,1
+91,VFD2 Alarms,Alarms,1,VFD2 Low Discharge,Alarm,Normal,,1
+91,VFD2 Alarms,Alarms,2,VFD2 High Suction,Alarm,Normal,,1
+91,VFD2 Alarms,Alarms,3,VFD2 Low Suction,Alarm,Normal,,1
+91,VFD2 Alarms,Alarms,4,VFD2 Low Oil,Alarm,Normal,,1
+91,VFD2 Alarms,Alarms,5,VFD2 Low Lube,Alarm,Normal,,1
+91,VFD2 Alarms,Alarms,6,VFD2 Vibration,Alarm,Normal,,1
+91,VFD2 Alarms,Alarms,7,VFD2 Low Crank Case,Alarm,Normal,,1
+

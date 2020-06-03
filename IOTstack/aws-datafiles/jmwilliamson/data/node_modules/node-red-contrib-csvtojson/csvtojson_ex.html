@@ -1,0 +1,179 @@
+<script type="text/javascript">
+    RED.nodes.registerType('csv to json ext',{
+        category: 'function',
+        color: '#a6bbcf',
+        defaults: {
+            name: {value:""},
+            version: {value:"0.1"},
+            source: {value:"filename", required:true},
+            delimiter: {value:",", required:true, validate:function(v) {
+                // "auto" or "," or other character
+                // if list, must be list of strings
+                if (v === "auto" || v === ",") {
+                    return true;
+                }
+                if (v.indexOf(',') > -1) {
+                    try {
+                        // first, will it parse as a comma delimited list
+                        var l = JSON.parse("[" + v + "]"); 
+                        // second, are all the elements strings
+                        var length = l.length;
+                        for (var i = 0; i < length; i++) {
+                            if ( !(typeof l[i] === 'string' || l[i] instanceof String) ) {
+                                throw 'Non-string in list';
+                            }
+                        }
+                    }
+                    catch (err) {
+                        return false;
+                    }
+                }
+                return true; 
+            }},
+            quote: {value:"\"", required:true},
+            escape: {value:"\"", required:true},
+            ignoreEmpty: {value:false},
+            checkType: {value:false},
+            trim: {value:false},
+            noheader: {value:false},
+            includeColumns: {value:"", validate:function(v) {
+                try {
+                    JSON.parse("[" + v + "]"); 
+                }
+                catch (err) {
+                    return false;
+                }
+                return true; 
+            }},
+            headers: {value:"", validate:function(v) {
+                try {
+                    JSON.parse("[" + v + "]"); 
+                }
+                catch (err) {
+                    return false;
+                }
+                return true; 
+            }},
+            debug: {value:false}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "file.png",
+        label: function() {
+            return this.name||"csv to json";
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="csv to json ext">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-tips"><b>Info:</b> If msg.payload is selected as the <b>Source</b>, the raw contents of the file as a UTF-8 string are expected in <code>msg.payload</code>.</div>
+    <div class="form-row">
+        <label for="node-input-source"><i class="fa fa-file-excel-o"></i> Source</label>
+        <select id="node-input-source">
+            <option selected="selected" value="filename">msg.filename</option>
+            <option value="payload">msg.payload</option>
+        </select>
+    </div>
+    <div class="form-tips"><b>Info:</b> To use a tab as a delimiter (or a quote or quote escape), you must copy and paste an actual tab character into the field. No escaped control characters are allowed.</div>
+        <div class="form-row">
+        <label for="node-input-delimiter"><i class="fa fa-chain-broken"></i> Delimiter</label>
+        <input type="text" id="node-input-delimiter" placeholder="a character (e.g. ,) OR auto OR list (e.g. &quot;,&quot;,&quot;|&quot;)">
+    </div>
+    <div class="form-row">
+        <label for="node-input-quote"><i class="fa fa-quote-right"></i> Quote</label>
+        <input type="text" id="node-input-quote" placeholder="&quot;">
+    </div>
+    <div class="form-row">
+        <label for="node-input-escape"><i class="fa fa-quote-left"></i> Escape</label>
+        <input type="text" id="node-input-escape" placeholder="&quot;">
+    </div>
+    <div class="form-row">
+        <label for="node-input-ignoreEmpty"><i class="fa fa-ban"></i> Ignore Empty</label>
+        <input type="checkbox" id="node-input-ignoreEmpty">
+    </div>
+    <div class="form-tips"><b>Warning:</b> If <b>Check Type</b> is selected, you will lose leading zeros from all numeric fields.</div>
+    <div class="form-row">
+        <label for="node-input-checkType"><i class="fa fa-arrow-right"></i> Check Type</label>
+        <input type="checkbox" id="node-input-checkType">
+    </div>
+    <div class="form-row">
+        <label for="node-input-trim"><i class="fa fa-scissors"></i> Trim</label>
+        <input type="checkbox" id="node-input-trim">
+    </div>
+    <div class="form-row">
+        <label for="node-input-noheader"><i class="fa fa-header"></i> No Header</label>
+        <input type="checkbox" id="node-input-noheader">
+    </div>
+    <div class="form-row">
+        <label for="node-input-includeColumns"><i class="fa fa-columns"></i> Include Columns</label>
+        <input type="text" id="node-input-includeColumns" placeholder="0,1,2,&quot;name&quot;,...">
+    </div>
+    <div class="form-row">
+        <label for="node-input-headers"><i class="fa fa-tags"></i> Headers</label>
+        <input type="text" id="node-input-headers" placeholder="&quot;label1&quot;,&quot;label 2&quot;,...">
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-debug"><i class="fa fa-bug"></i> Debug</label>
+        <input type="checkbox" id="node-input-debug">
+    </div>
+
+    <div class="form-tips"><b>Reference:</b> <a target="_blank" href="https://github.com/Keyang/node-csvtojson">
+    https://github.com/Keyang/node-csvtojson</a></div>
+</script>
+
+<script type="text/x-red" data-help-name="csv to json ext">
+    <h2><i>Parser for csv files</i></h2>
+    
+    <p>This node is requires the <b>csvtojson</b> module to be installed. All node properties
+    follow the usage guidelines found on the <b>csvtojson</b> GitHub page. For more 
+    information, please reference <a href="https://github.com/Keyang/node-csvtojson">
+    https://github.com/Keyang/node-csvtojson</a></p>
+
+    <h3><b>Inputs</b></h3>
+    <dl class="message-properties">
+    <dt><code>msg.filename | msg.payload</code>
+        <span class="property-type">string</span>
+    </dt>
+    <dd>the file path/name to read as <code>msg.filename</code> or the contents of the file 
+    as <code>msg.payload</code>. A UTF-8 string is expected if msg.payload is the source of 
+    the file contents. The files must be consistently line delimited with either a newline, a carriage return, 
+    or a carriage return followed by a line feed. No other line delimiters are supported in this implementation.</dd>
+
+    <h3><b>Outputs</b></h3>
+    <ol class="node-ports">
+        <li>Standard output
+            <dl class="message-properties">
+                <dt><code>msg.payload</code> <span class="property-type">object array</span></dt>
+                <dd>a JSON object representing the parsed file.</dd>
+            </dl>
+        </li>
+        <li>Standard error
+            <dl class="message-properties">
+                <dt><code>msg.payload</code> <span class="property-type">string</span></dt>
+                <dd>the standard errors output from csvtojson</dd>
+            </dl>
+        </li>
+    </ol>
+
+    <h3><b>Details</b></h3>
+    <p>A node that converts the contents of a csv (or delimited) file to a JSON 
+        object. The resulting JSON object is place in <code>msg.payload</code>. 
+        The <code>msg.filename</code> field is used to determine the file path and name 
+        path to open and parse or the contents of the file to parse will be provided
+        in <code>msg.payload</code> as a UTF-8 string.</p>
+    
+    <p>Unsupported <b>csvtojson</b> properties in this version:
+        <li>toArrayString</li>
+        <li>workerNum</li>
+        <li>flatKeys</li>
+        <li>maxRowLength</li>
+        <li>eol</li>
+        <li>ignoreColumns</li>
+        <li>colParser</li>
+    </p>
+</script>

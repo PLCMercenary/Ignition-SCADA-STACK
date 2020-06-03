@@ -1,0 +1,106 @@
+version: '2'
+services:
+
+  portainer:
+    container_name: portainer
+    image: portainer/portainer
+    restart: unless-stopped
+    expose:
+      - 9000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./volumes/portainer/data:/data
+    labels:
+      - "docker.group=iot_stack"
+    environment:
+      VIRTUAL_HOST: portainer.scadadevs.com 
+      VIRTUAL_PORT: 9000
+      LETSENCRYPT_HOST: portainer.scadadevs.com 
+      LETSENCRYPT_EMAIL: twinflameautomation@gmail.com
+
+  influxdb:
+    container_name: monitor-influxdb
+    image: "influxdb:latest"
+    restart: unless-stopped
+    ports:
+      - 8086
+      - 8088
+      - 2003
+    env_file:
+      - ./services/influxdb/influxdb.env
+    volumes:
+      - ./volumes/influxdb/data:/var/lib/influxdb
+      - ./backups/influxdb/db:/var/lib/influxdb/backup
+
+  grafana:
+    container_name: monitor-grafana
+    image: grafana/grafana:6.3.6
+    restart: unless-stopped
+    user: "0"
+    ports:
+      - 3000
+    env_file:
+      - ./services/grafana/grafana.env
+    volumes:
+      - ./volumes/grafana/data:/var/lib/grafana
+      - ./volumes/grafana/log:/var/log/grafana
+    environment:
+      VIRTUAL_HOST: grafana.scadadevs.com
+      VIRTUAL_PORT: 3000
+      LETSENCRYPT_HOST: grafana.scadadevs.com
+      LETSENCRYPT_EMAIL: twinflameautomation@gmail.com
+
+  mosquitto:
+    container_name: monitor-mosquitto
+    image: eclipse-mosquitto
+    restart: unless-stopped
+    user: "1883"
+    ports:
+      - 1883
+      - 9001
+    volumes:
+      - ./volumes/mosquitto/data:/mosquitto/data
+      - ./volumes/mosquitto/log:/mosquitto/log
+      - ./services/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+
+  telegraf:
+    container_name: monitor-telegraf
+    image: telegraf
+    volumes:
+      - ./services/telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+    depends_on:
+      - influxdb
+      - mosquitto
+
+  mariadb:
+    image: linuxserver/mariadb
+    container_name: mariadb
+    env_file:
+      - ./services/mariadb/mariadb.env
+    volumes:
+      - ./volumes/mariadb/config:/config
+    ports:
+      - 3306
+    restart: unless-stopped
+
+  postgres:
+    container_name: ccs-Roleserver
+    image: postgres
+    restart: unless-stopped
+    env_file:
+      - ./services/postgres/postgres.env
+    ports:
+      - 5432
+    volumes:
+      - ./volumes/postgres/data:/var/lib/postgresql/data
+    environment:
+      VIRTUAL_HOST: roleserver.scadadevs.com
+      VIRTUAL_PORT: 5432
+      LETSENCRYPT_HOST: roleserver.scadadevs.com
+      LETSENCRYPT_EMAIL: twinflameautomation@gmail.com
+
+
+networks:
+  default:
+   external:
+    name: nginx-proxy

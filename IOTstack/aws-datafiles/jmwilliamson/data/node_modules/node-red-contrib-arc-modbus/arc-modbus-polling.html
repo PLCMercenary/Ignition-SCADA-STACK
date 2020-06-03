@@ -1,0 +1,272 @@
+<script type="text/x-red" data-template-name="arc-modbus-polling">
+    <div class="form-row">
+        <label for="node-input-timeouts"><i class="fa fa-clock-o"></i> Timeouts</label>
+        <input type="text" id="node-input-timeouts" placeholder="Miliseconds">
+    </div>    
+    <div class="form-row">
+        <label for="node-input-interval"><i class="fa fa-clock-o"></i> Interval</label>
+        <input type="text" id="node-input-interval" placeholder="Miliseconds">
+    </div>  
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>   
+    <div class="form-row">
+        <label for="node-input-disable_polling" style="width:70%">
+            <input type="checkbox" id="node-input-disable_polling" style="display:inline-block; width:22px; vertical-align:baseline;"> Polling Disable </span>
+        </label>
+    </div>
+    <div class="form-row" style="margin-bottom:0;">
+        <label><i class="fa fa-list"></i> Rules<span data-i18n="change.label.rules"></span></label>
+    </div>
+    <div class="form-row node-input-rule-container-row">
+        <ol id="node-input-rule-container"></ol>
+    </div>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('arc-modbus-polling', {
+        category: 'ARC Modbus',
+        color: '#f4c284',
+        defaults: {
+            timeouts: { value: "1000", required: true, validate: function (v) { return RED.validators.number(v) && (v >= 0); } }, // uint only
+            interval: { value: "100", required: true, validate: function (v) { return RED.validators.number(v) && (v >= 0); } }, // uint only
+            rules: { value: [{ access: "RW_Regs", regs_addr: "0", regs_num: "10" }] },
+            disable_polling: { value: false },
+            name: { value: "" }
+        },
+        inputs: 1,
+        outputs: 3,
+        icon: "file.png",
+        label: function () {
+            return this.name || "polling";
+        },
+        oneditprepare: function () {
+
+            function resizeRule(rule) {
+                var newWidth = rule.width();
+                rule.find('.red-ui-typedInput').typedInput("width", newWidth - 130);
+
+            }
+            $('#node-input-rule-container').css('min-height', '450px').css('min-width', '450px').editableList({
+                addItem: function (container, i, opt) {
+                    var rule = opt;
+                    if (!rule.hasOwnProperty('access')) {
+                        rule = { access: "RW_Regs", regs_addr: "0", regs_num: "10" };
+                    }
+                    container.css({
+                        overflow: 'hidden',
+                        whiteSpace: 'nowrap'
+                    });
+                    var row1 = $('<div/>').appendTo(container);
+                    var row2 = $('<div/>', { style: "margin-top:8px;" }).appendTo(container);
+                    var row3 = $('<div/>', { style: "margin-top:8px;" }).appendTo(container);
+
+
+                    // row1 combobox type
+                    var selectField = $('<select/>', { class: "node-input-rule-access", style: "width:110px; margin-right:10px;" }).appendTo(row1);
+                    var selectOptions = [
+                        { v: "RW_Bits", stxt: "RW Bits (FC01)" },
+                        { v: "RO_Bits", stxt: "RO Bits (FC02)" },
+                        { v: "RW_Regs", stxt: "RW Regs (FC03)" },
+                        { v: "RO_Regs", stxt: "RO Regs (FC04)" }
+                    ];
+
+                    for (var i = 0; i < 4; i++) {
+                        selectField.append($("<option></option>").val(selectOptions[i].v).text(selectOptions[i].stxt));
+                    }
+
+                    // row2_1 text Addr:
+                    $('<div/>',
+                        { style: "display:inline-block;text-align:right; width:110px; margin-right:10px; box-sizing:border-box;" })
+                        .text("Start Address:")
+                        .appendTo(row2);
+
+                    // row2_2 address input:
+                    var regs_address = $('<input/>',
+                        {
+                            class: "node-input-rule-regs-address",
+                            type: "text"
+                        })
+                        .appendTo(row2)
+                        .typedInput({ types: ['num'] });
+
+                    //row3_1 text Number:
+                    $('<div/>',
+                        { style: "display:inline-block;text-align:right; width:110px; margin-right:10px; box-sizing:border-box;" })
+                        .text("Polling Number:")
+                        .appendTo(row3);
+
+                    //row3_2 regs_number input:
+                    var regs_number = $('<input/>',
+                        {
+                            class: "node-input-rule-regs-number",
+                            type: "text"
+                        })
+                        .appendTo(row3)
+                        .typedInput({ types: ['num'] });
+
+                    selectField.val(rule.access);
+                    regs_address.typedInput('value', rule.regs_addr);
+                    regs_number.typedInput('value', rule.regs_num);
+
+                    selectField.change();
+                    var newWidth = $("#node-input-rule-container").width();
+                    resizeRule(container);
+                },
+                resizeItem: resizeRule,
+                removable: true,
+                sortable: true
+            });
+
+            if (!this.rules) {
+                var rule = {
+                    access: "RW_Regs",
+                    regs_addr: "0",
+                    regs_num: "10"
+                };
+
+                this.rules = [rule];
+            }
+
+            for (var i = 0; i < this.rules.length; i++) {
+                var rule = this.rules[i];
+                $("#node-input-rule-container").editableList('addItem', rule);
+            }
+        },
+        oneditsave: function () {
+            var rules = $("#node-input-rule-container").editableList('items');
+            var node = this;
+            node.rules = [];
+            rules.each(function (i) {
+                var rule = $(this);
+                var r = {
+                    access: rule.find(".node-input-rule-access").val(),
+                    regs_addr: rule.find(".node-input-rule-regs-address").typedInput('value'),
+                    regs_num: rule.find(".node-input-rule-regs-number").typedInput('value')
+                };
+                node.rules.push(r);
+                //console.log(r);
+            });
+        },
+        oneditresize: function (size) {
+
+            var rows = $("#dialog-form>div:not(.node-input-rule-container-row)");
+            var height = size.height;
+            for (var i = 0; i < rows.size(); i++) {
+                height -= $(rows[i]).outerHeight(true);
+            }
+            var editorRow = $("#dialog-form>div.node-input-rule-container-row");
+            height -= (parseInt(editorRow.css("marginTop")) + parseInt(editorRow.css("marginBottom")));
+
+            $("#node-input-rule-container").editableList('height', height);
+        }
+
+    });
+</script>
+
+<script type="text/x-red" data-help-name="arc-modbus-polling">
+    <p>This is a Modbus polling tool base on Moudbus RTU protocol.
+    The node were able to send modbus requests according to the established rule table.
+    And collects responses to make the final result.
+    It can be switched polling behavior by input <code><b>msg.poll</b></code>.
+    It can send "write request" command by input <code><b>msg.write</b></code>.
+    It can handle modbus exception code.
+    The modbus function code <code>01 02 03 04 05 06 15 16</code> has been implementation.
+    </p>
+
+    <p>這是一個Modbus的輪詢工具，使用的格式是Moudbus RTU。
+    節點會按照設定的規則，發出請求並且等待接收設備的回應，最終將回應整理成每個規則的結果。
+    可以透過設定與控制命令來切換：持續、單步與停止輪詢。
+    可以透過控制命令讓節點發出寫入請求。
+    可以處理例外編碼。
+    實作的modbus功能瑪有:01 02 03 04 05 06 15 16。    
+    </p>
+
+    <h3>example</h3>
+        <p><code>[{"id":"c1839961.6e41c8","type":"arc-modbus-polling","z":"e7ca081.068c0f8","timeouts":"1000","interval":"50","rules":[{"access":"RW_Regs","regs_addr":"0","regs_num":"10"},{"access":"RW_Regs","regs_addr":"10","regs_num":"150"},{"access":"RW_Bits","regs_addr":"0","regs_num":"50"}],"disable_polling":false,"name":"","x":690,"y":900,"wires":[["da916d29.d84b9"],["18eb5449.277f0c","b24d29f.d9fbcd8"],["332103d3.e913dc"]]},{"id":"da916d29.d84b9","type":"tcp request","z":"e7ca081.068c0f8","server":"127.0.0.1","port":"502","out":"sit","splitc":" ","name":"","x":580,"y":780,"wires":[["3ec5564f.e1c79a"]]},{"id":"3ec5564f.e1c79a","type":"change","z":"e7ca081.068c0f8","name":"payload -> response","rules":[{"t":"move","p":"payload","pt":"msg","to":"response","tot":"msg"}],"action":"","property":"","from":"","to":"","reg":false,"x":810,"y":780,"wires":[["c1839961.6e41c8","7a33efc8.fa863"]]},{"id":"7a33efc8.fa863","type":"debug","z":"e7ca081.068c0f8","name":"response","active":false,"tosidebar":true,"console":false,"tostatus":false,"complete":"response","x":1030,"y":780,"wires":[]},{"id":"18eb5449.277f0c","type":"debug","z":"e7ca081.068c0f8","name":"","active":false,"tosidebar":true,"console":false,"tostatus":false,"complete":"payload","x":890,"y":900,"wires":[]},{"id":"b24d29f.d9fbcd8","type":"debug","z":"e7ca081.068c0f8","name":"result","active":false,"tosidebar":true,"console":false,"tostatus":false,"complete":"payload.result","x":870,"y":940,"wires":[]},{"id":"6adecef4.800db","type":"inject","z":"e7ca081.068c0f8","name":"write bits (FC15)","topic":"","payload":"{\"address\":20,\"data\":[false,true,true,true]}","payloadType":"json","repeat":"","crontab":"","once":false,"onceDelay":0.1,"x":230,"y":820,"wires":[["506aa932.aba248"]]},{"id":"faf8573b.97de28","type":"inject","z":"e7ca081.068c0f8","name":"write value (FC16)","topic":"","payload":"{\"address\":40,\"data\":[99,88,77,666]}","payloadType":"json","repeat":"","crontab":"","once":false,"onceDelay":0.1,"x":220,"y":900,"wires":[["506aa932.aba248"]]},{"id":"229804ec.da124c","type":"inject","z":"e7ca081.068c0f8","name":"write value (FC06)","topic":"","payload":"{\"address\":30,\"data\":123}","payloadType":"json","repeat":"","crontab":"","once":false,"onceDelay":0.1,"x":220,"y":860,"wires":[["506aa932.aba248"]]},{"id":"506aa932.aba248","type":"change","z":"e7ca081.068c0f8","name":"payload -> write","rules":[{"t":"move","p":"payload","pt":"msg","to":"write","tot":"msg"}],"action":"","property":"","from":"","to":"","reg":false,"x":480,"y":900,"wires":[["c1839961.6e41c8"]]},{"id":"96e684f0.cb0ed8","type":"inject","z":"e7ca081.068c0f8","name":"write bit (FC05)","topic":"","payload":"{\"address\":10,\"data\":false}","payloadType":"json","repeat":"","crontab":"","once":false,"onceDelay":0.1,"x":230,"y":780,"wires":[["506aa932.aba248"]]},{"id":"332103d3.e913dc","type":"debug","z":"e7ca081.068c0f8","name":"exception msg","active":false,"tosidebar":true,"console":false,"tostatus":false,"complete":"payload","x":900,"y":980,"wires":[]},{"id":"1c6edf03.18e9f1","type":"inject","z":"e7ca081.068c0f8","name":"once","topic":"","payload":"once","payloadType":"str","repeat":"","crontab":"","once":false,"onceDelay":0.1,"x":250,"y":1080,"wires":[["dbd3c9e3.d8f368"]]},{"id":"dbd3c9e3.d8f368","type":"change","z":"e7ca081.068c0f8","name":"","rules":[{"t":"set","p":"poll","pt":"msg","to":"payload","tot":"msg"}],"action":"","property":"","from":"","to":"","reg":false,"x":470,"y":1040,"wires":[["c1839961.6e41c8"]]},{"id":"5a924938.8a75e8","type":"inject","z":"e7ca081.068c0f8","name":"","topic":"","payload":"start","payloadType":"str","repeat":"","crontab":"","once":false,"onceDelay":0.1,"x":250,"y":1120,"wires":[["dbd3c9e3.d8f368"]]},{"id":"dbd1d4b7.418cc8","type":"inject","z":"e7ca081.068c0f8","name":"","topic":"","payload":"stop","payloadType":"str","repeat":"","crontab":"","once":false,"onceDelay":0.1,"x":250,"y":1040,"wires":[["dbd3c9e3.d8f368"]]},{"id":"3c69506.230b3b","type":"comment","z":"e7ca081.068c0f8","name":"example of write","info":"","x":230,"y":740,"wires":[]},{"id":"53f259b3.c6c3d8","type":"comment","z":"e7ca081.068c0f8","name":"example of control polling behavior","info":"","x":160,"y":1000,"wires":[]}]</code></p>
+
+    <p><b>timeouts</b>(ms) indicates the time limit for the node to wait for a response.
+    <b>interval</b>(ms) indicates how long to wait during receiving a response and sending next request. 
+    If <b>Polling Disbale</b> is checked, polling behavior will be paused. 
+    </p>
+
+    <p><b>timeouts</b>(ms) 表示節點等待回應的上限時間表示節點等待回應的上限時間。
+    <b>interval</b>(ms) 表示收到回應後要等待多久才發出下一筆要求(ms)。
+    如果<b>Polling Disbale</b>被設定，輪詢的行為將會受控於控制命令
+    </p>
+
+
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt class="optional">response
+            <span class="property-type">buffer</span>
+        </dt>
+        <dd> Packets that are response from the Modbus device.</dd>
+        <dd> 從Modbus設備回應出的封包 </dd>
+
+        <dt class="optional">write
+            <span class="property-type">JSON</span>
+        </dt>
+        <dd>This command can be used to trigger a write request. JSON format reference example</dd>
+        <dd>可以透過這個命令來觸發寫入的請求，JSON格式參考範例</dd>
+
+        <dt class="optional">poll
+            <span class="property-type">string</span>
+        </dt>
+        <dd> You can switch to continue or stop polling by string (<b>"start"</b>, <b>"stop"</b>, <b>"once"</b>).
+        As long as msg contains this property, it node will trigger to poll once.
+        </dd>        
+        <dd> 可以透過控制命令(<b>"start"</b>, <b>"stop"</b>, <b>"once"</b>)來切換持續、停止或單次輪詢。
+        只要msg包含poll屬性，就會觸發輪詢一次
+        </dd>        
+    </dl>
+
+    <h3>Outputs</h3>
+    <ol class="node-ports">
+        <li>request packets output
+            <dl class="message-properties">
+                <dt>payload <span class="property-type">buffer</span></dt>
+                <dd>各種請求封包，使用時要將之接往Modbus設備的通訊口</dd>
+            </dl>
+        </li>
+        <li>result output
+            <dl class="message-properties">
+                <dt>payload <span class="property-type">JSON</span></dt>
+                <dt>payload.result</dt>
+                <dd>result infomation</dd>
+                <dd>要求的結果</dd>
+
+                <dt>payload.rule.</dt>
+                <dd>request rule for this result.</dd>
+                <dd>要求的規則</dd>
+
+                <dt>payload.pkgs</dt>
+                <dd>request packet for this result.</dd>
+                <dd>要求的封包與回應</dd>
+            </dl>
+        </li>
+        <li>Exception output
+                <dl class="message-properties">
+                    <dt>payload <span class="property-type">JSON</span></dt>
+                    
+                    <dt>payload.result</dt>       
+                    <dd>exception infomation.</dd>             
+                    <dd>例外的訊息(例如：exception code或timeout)</dd>
+
+                    <dt>payload.rule</dt>
+                    <dd>request rule for this result.</dd>
+                    <dd>要求的規則</dd>
+
+                    <dt>payload.pkgs</dt>
+                    <dd>request packet for this result.</dd>
+                    <dd>要求的封包與回應</dd>
+                </dl>
+            </li>
+    </ol>
+<h3>References</h3>
+    <ul>
+        <li><a>NodeRed Documentation</a> https://nodered.org/docs/creating-nodes/</li>
+        <li><a>Simply Modbus</a> http://www.simplymodbus.ca/index.html</li>
+    </ul>
+</script>

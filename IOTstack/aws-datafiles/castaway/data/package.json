@@ -1,0 +1,22 @@
+{
+    "name": "node-red-project",
+    "description": "A Node-RED Project",
+    "version": "0.0.1",
+    "private": true,
+    "dependencies": {
+        "mqtt": "^3.0.0",
+        "node-red-contrib-cron": "0.0.4",
+        "node-red-contrib-fast-csv": "~0.4.0",
+        "node-red-contrib-ip": "0.0.5",
+        "node-red-contrib-modbus": "~4.1.3",
+        "node-red-contrib-moment": "~3.0.3",
+        "node-red-contrib-oauth2": "~1.1.1",
+        "node-red-contrib-opcua": "~0.2.45",
+        "node-red-contrib-protobuf": "~1.0.3",
+        "node-red-contrib-re-postgres": "~0.1.9",
+        "node-red-contrib-remote-io": "^0.1.3",
+        "node-red-contrib-sendgrid": "0.0.6",
+        "node-red-contrib-sparkplug": "~2.1.1",
+        "node-red-dashboard": "~2.15.5"
+    }
+}

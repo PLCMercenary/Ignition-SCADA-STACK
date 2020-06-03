@@ -1,0 +1,95 @@
+<script type="text/x-red" data-template-name="sms">
+<div class="form-row" id="node-input-twilio-row">
+    <label for="node-input-twilio"><i class="fa fa-user"></i> Twilio</label>
+    <input type="text" id="node-input-twilio">
+</div>
+  <div class="form-row">
+    <label for="node-input-message"><i class="fa fa-edit"></i> Message</label>
+    <input type="text" id="node-input-message" placeholder="payload">
+  </div>
+  <div class="form-row">
+    <label for="node-input-numbers"><i class="fa fa-mobile" style="font-size:160%"></i> Numbers</label>
+    <input type="text" id="node-input-numbers" placeholder="topic">
+  </div>
+  <div class="form-row">
+    <label for="node-input-throttle"><i class="fa fa-tachometer"></i> Throttle</label>
+    <input type="number" id="node-input-throttle" placeholder="1000">
+  </div>
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+</script>
+
+
+<script type="text/x-red" data-template-name="twilioConfig">
+    <div class="form-row">
+        <label for="node-config-input-sid">Account SID</label>
+        <input type="text" id="node-config-input-sid">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-token"><i class="fa fa-lock"></i> Token</label>
+        <input type="password" id="node-config-input-token">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-from"><i class="fa fa-envelope"></i> From</label>
+        <input type="text" id="node-config-input-from">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-config-input-name" placeholder="twilioConfig">
+    </div>
+</script>
+
+
+<script type="text/x-red" data-help-name="sms">
+  Bulk SMS messages using the Twilio service.
+  <hr/>
+  <p><b>Properties</b></p>
+  <code>Message</code> Text to be sent. If left empty it will use <i>msg.payload</i>
+  <br/>
+  <code>Numbers</code> Comma separated list of mobile numbers. Defaults to <i>msg.topic</i>
+  <br/>
+  <code>Throttle</code> Number of milliseconds to wait between messages. Might be useful if the SMS provider throttles the message rates.
+</script>
+
+
+<script type="text/javascript">
+  RED.nodes.registerType('sms', {
+    category: 'mobile',
+    defaults: {
+        name: {value:"sms"},
+        message: {},
+        numbers: {},
+        throttle: {value:1000},
+        twilio: {type:"twilioConfig"}
+    },
+    color: "#3FADB5",
+    inputs: 1,
+    outputs: 1,
+    icon: "light.png",
+    align: "right",
+    label: function() {
+      return this.name || this.title || 'sms'
+    },
+    labelStyle: function() {
+      return this.name ? "node_label_italic" : "";
+    },
+  })
+
+  RED.nodes.registerType('twilioConfig', {
+      category: 'config',
+      defaults: {
+          name: { value: "twilioConfig"}
+      },
+      credentials: {
+        sid: {type: "text", required: true},
+        token: {type: "text", required: true},
+        from: {type: "text", required: true}
+      },
+      label: function() {
+          return this.name;
+      }
+  })
+
+</script>

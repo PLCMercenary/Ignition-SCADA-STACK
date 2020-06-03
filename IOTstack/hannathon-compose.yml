@@ -1,0 +1,115 @@
+version: '3.0'
+services:
+  nodehannagalveston:
+    container_name: nrGalveston
+    build: ./services/nodered/.
+    restart: unless-stopped
+    user: "0"
+    privileged: true
+    env_file: ./services/hannathon-node/nodered.env
+    ports:
+    - 1880
+    - 2080
+    networks:
+      default:
+        ipv4_address: 172.19.0.57
+        aliases:
+          - hanna_galveston_nr
+      backend:
+        ipv4_address: 172.30.0.57
+        aliases:
+          - hanna_galveston_nr
+    volumes:
+      - ./volumes/nrGalveston/data:/data
+    environment:
+      VIRTUAL_HOST: ccs-hann-galveston.scadadevs.com
+      VIRTUAL_PORT: 1880
+      LETSENCRYPT_HOST: ccs-hann-galveston.scadadevs.com
+      LETSENCRYPT_EMAIL: twinflameautomation@gmail.com
+
+  nodehannakrampf:
+    container_name: nrKrampf
+    build: ./services/nodered/.
+    restart: unless-stopped
+    user: "0"
+    privileged: true
+    env_file: ./services/hannathon-node/nodered.env
+    ports:
+    - 1880
+    - 2080
+    networks:
+      default:
+        ipv4_address: 172.19.0.59
+        aliases:
+          - hanna_Krampf_nr
+      backend:
+        ipv4_address: 172.30.0.59
+        aliases:
+          - hanna_krampf_nr
+    volumes:
+      - ./volumes/nrKrampf/data:/data
+    environment:
+      VIRTUAL_HOST: ccs-hann-krampf.scadadevs.com
+      VIRTUAL_PORT: 1880
+      LETSENCRYPT_HOST: ccs-hann-krampf.scadadevs.com
+      LETSENCRYPT_EMAIL: twinflameautomation@gmail.com
+
+
+  nodehannamorgan:
+    container_name: nrMorgan
+    build: ./services/nodered/.
+    restart: unless-stopped
+    user: "0"
+    privileged: true
+    env_file: ./services/hannathon-node/nodered.env
+    ports:
+    - 1880
+    - 2080
+    networks:
+      default:
+        ipv4_address: 172.19.0.35
+        aliases:
+          - hanna_morgan_nr
+      backend:
+        ipv4_address: 172.30.0.35
+        aliases:
+          - hanna_morgan_nr
+    volumes:
+      - ./volumes/nrMorgan/data:/data
+    environment:
+      VIRTUAL_HOST: ccs-hann-morgan.scadadevs.com
+      VIRTUAL_PORT: 1880
+      LETSENCRYPT_HOST: ccs-hann-morgan.scadadevs.com
+      LETSENCRYPT_EMAIL: twinflameautomation@gmail.com
+
+  hannathonInflux:
+    container_name: dbHannathon
+    image: "influxdb:latest"
+    restart: unless-stopped
+    ports:
+      - 8086
+      - 8083
+      - 2003
+    env_file:
+      - ./services/hannathon-db/influxdb.env
+    volumes:
+      - ./volumes/dbHanna/data:/var/lib/influxdb
+      - ./backups/dbHanna/db:/var/lib/influxdb/backup
+    networks:
+      default:
+        ipv4_address: 172.19.0.58
+        aliases:
+           - hanna_db
+      backend:
+        ipv4_address: 172.30.0.58
+        aliases:
+          - hanna_db
+ 
+networks:
+  default:
+    external:
+      name: nginx-proxy
+  backend:
+    external:
+      name: container-comm 
+

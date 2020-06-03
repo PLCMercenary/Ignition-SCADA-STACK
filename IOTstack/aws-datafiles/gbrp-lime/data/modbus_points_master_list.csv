@@ -1,0 +1,55 @@
+reg_address,reg_name,group,bit,point_name,alias_on,alias_off,parse,quantity
+30,Status,Status,0,LACT 1 Perm,On,Off,,1
+30,Status,Status,1,LACT 2 Perm,On,Off,,1
+30,Status,Status,2,LACT 3 Perm,On,Off,,1
+30,Status,Status,3,LACT 1 Run,On,Off,,1
+30,Status,Status,4,LACT 2 Run,On,Off,,1
+30,Status,Status,5,LACT 3 Run,On,Off,,1
+40,Tank_H_Alarms,Alarms,0,Water Tank H Alarm,Alarm,Normal,,1
+40,Tank_H_Alarms,Alarms,1,Conroe #1 Tank 1 H Alarm,Alarm,Normal,,1
+40,Tank_H_Alarms,Alarms,2,Conroe #1 Tank 2 H Alarm,Alarm,Normal,,1
+40,Tank_H_Alarms,Alarms,3,Conroe #1 Tank 3 H Alarm,Alarm,Normal,,1
+40,Tank_H_Alarms,Alarms,4,Midland Tank 1 H Alarm,Alarm,Normal,,1
+40,Tank_H_Alarms,Alarms,5,Midland Tank 2 H Alarm,Alarm,Normal,,1
+40,Tank_H_Alarms,Alarms,6,Conroe #2 Tank 1 H Alarm,Alarm,Normal,,1
+40,Tank_H_Alarms,Alarms,7,Conroe #2 Tank 2 H Alarm,Alarm,Normal,,1
+40,Tank_H_Alarms,Alarms,8,Conroe #2 Tank 3 H Alarm,Alarm,Normal,,1
+41,Tank_HH_Alarms,Alarms,0,Water Tank HH Alarm,Alarm,Normal,,1
+41,Tank_HH_Alarms,Alarms,1,Conroe #1 Tank 1 HH Alarm,Alarm,Normal,,1
+41,Tank_HH_Alarms,Alarms,2,Conroe #1 Tank 2 HH Alarm,Alarm,Normal,,1
+41,Tank_HH_Alarms,Alarms,3,Conroe #1 Tank 3 HH Alarm,Alarm,Normal,,1
+41,Tank_HH_Alarms,Alarms,4,Midland Tank 1 HH Alarm,Alarm,Normal,,1
+41,Tank_HH_Alarms,Alarms,5,Midland Tank 2 HH Alarm,Alarm,Normal,,1
+41,Tank_HH_Alarms,Alarms,6,Conroe #2 Tank 1 HH Alarm,Alarm,Normal,,1
+41,Tank_HH_Alarms,Alarms,7,Conroe #2 Tank 2 HH Alarm,Alarm,Normal,,1
+41,Tank_HH_Alarms,Alarms,8,Conroe #2 Tank 3 HH Alarm,Alarm,Normal,,1
+42,Tank_L_Alarms,Alarms,0,Water Tank L Alarm,Alarm,Normal,,1
+42,Tank_L_Alarms,Alarms,1,Conroe #1 Tank 1 L Alarm,Alarm,Normal,,1
+42,Tank_L_Alarms,Alarms,2,Conroe #1 Tank 2 L Alarm,Alarm,Normal,,1
+42,Tank_L_Alarms,Alarms,3,Conroe #1 Tank 3 L Alarm,Alarm,Normal,,1
+42,Tank_L_Alarms,Alarms,4,Midland Tank 1 L Alarm,Alarm,Normal,,1
+42,Tank_L_Alarms,Alarms,5,Midland Tank 2 L Alarm,Alarm,Normal,,1
+42,Tank_L_Alarms,Alarms,6,Conroe #2 Tank 1 L Alarm,Alarm,Normal,,1
+42,Tank_L_Alarms,Alarms,7,Conroe #2 Tank 2 L Alarm,Alarm,Normal,,1
+42,Tank_L_Alarms,Alarms,8,Conroe #2 Tank 3 L Alarm,Alarm,Normal,,1
+31,LACT 1 Select,Setpoints,,,,,"[{""func"": ""lact1SelectTank""}]",1
+31,LACT 2 Select,Setpoints,,,,,"[{""func"": ""lact2SelectTank""}]",1
+31,LACT 3 Select,Setpoints,,,,,"[{""func"": ""lact3SelectTank""}]",1
+32,LACT Start SP,Setpoints,,,,,"[{""func"": ""scale"", ""param"": 0.01}]",1
+33,LACT Stop SP,Setpoints,,,,,"[{""func"": ""scale"", ""param"": 0.01}]",1
+100,Water Tank Level,Levels,,,,,"[{""func"": ""scale"", ""param"": 0.01}]",1
+102,Conroe #1 Tank 1 Level,Levels,,,,,"[{""func"": ""scale"", ""param"": 0.01}]",1
+104,Conroe #1 Tank 2 Level,Levels,,,,,"[{""func"": ""scale"", ""param"": 0.01}]",1
+106,Conroe #1 Tank 3 Level,Levels,,,,,"[{""func"": ""scale"", ""param"": 0.01}]",1
+108,Midland Tank 1 Level,Levels,,,,,"[{""func"": ""scale"", ""param"": 0.01}]",1
+110,Midland Tank 2 Level,Levels,,,,,"[{""func"": ""scale"", ""param"": 0.01}]",1
+112,Conroe #2 Tank 1 Level,Levels,,,,,"[{""func"": ""scale"", ""param"": 0.01}]",1
+114,Conroe #2 Tank 2 Level,Levels,,,,,"[{""func"": ""scale"", ""param"": 0.01}]",1
+116,Conroe #2 Tank 3 Level,Levels,,,,,"[{""func"": ""scale"", ""param"": 0.01}]",1
+120,LACT 1 Level,Status,,,,,"[{""func"": ""scale"", ""param"": 0.01}]",1
+122,LACT 2 Level,Status,,,,,"[{""func"": ""scale"", ""param"": 0.01}]",1
+124,LACT 3 Level,Status,,,,,"[{""func"": ""scale"", ""param"": 0.01}]",1
+20,Tank H SP,Setpoints,,,,,"[{""func"": ""scale"", ""param"": 0.01}]",1
+22,Tank HH SP,Setpoints,,,,,"[{""func"": ""scale"", ""param"": 0.01}]",1
+24,Tank LL SP,Setpoints,,,,,"[{""func"": ""scale"", ""param"": 0.01}]",1
+26,Tank L SP,Setpoints,,,,,"[{""func"": ""scale"", ""param"": 0.01}]",1

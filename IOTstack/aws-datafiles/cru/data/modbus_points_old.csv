@@ -1,0 +1,22 @@
+reg_address,reg_name,bit,point_name,alias_on,alias_off
+40,Alarms,0,N Pump Pressure,Alarm,Normal
+40,Alarms,1,N Pump Oil,Alarm,Normal
+40,Alarms,2,N Pump Vibration,Alarm,Normal
+40,Alarms,3,N. Pump Kill,Alarm,Normal
+40,Alarms,4,N. Pump Lube,Alarm,Normal
+40,Alarms,5,S. Pump Pressure,Alarm,Normal
+40,Alarms,6,S. Pump Oil,Alarm,Normal
+40,Alarms,7,S. Pump Vibration,Alarm,Normal
+40,Alarms,8,S. Pump Kill,Alarm,Normal
+40,Alarms,9,S. Pump Lube,Alarm,Normal
+40,Alarms,10,Power Phase Loss,Alarm,Normal
+40,Alarms,11,Tank High Alarm,Alarm,Normal
+40,Alarms,12,120VAC Power Loss,Alarm,Normal
+41,Status,0,N. Pump Auto,Auto,Not Auto
+41,Status,1,N. Pump Hand,Hand,Not Hand
+41,Status,2,N. Pump Run,Running,Stopped
+41,Status,3,S. Pump Auto,Auto,Not Auto
+41,Status,4,S. Pump Hand,Hand,Not Hand
+41,Status,5,S. Pump Run,Running,Stopped
+41,Status,6,Battery Low Status,Alarm,Normal
+

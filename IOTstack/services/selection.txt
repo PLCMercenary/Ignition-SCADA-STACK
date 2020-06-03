@@ -1,0 +1,6 @@
+portainer
+nodered
+influxdb
+grafana
+mosquitto
+telegraf

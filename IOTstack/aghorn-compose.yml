@@ -1,0 +1,89 @@
+version: '3.0'
+services:
+  nodeaghornwilliamson:
+    container_name: nrWilliamson
+    build: ./services/nodered/.
+    restart: unless-stopped
+    user: "0"
+    privileged: true
+    env_file: ./services/hannathon-node/nodered.env
+    ports:
+    - 1880
+    - 2080
+    networks:
+      default:
+        ipv4_address: 172.19.0.34
+        aliases:
+          - ag_williamson_nr
+      backend:
+        ipv4_address: 172.30.0.34
+        aliases:
+          - ag_williamson_nr
+    volumes:
+      - ./volumes/nrWilliamson/data:/data
+    environment:
+      VIRTUAL_HOST: ccs-ag-williamson.scadadevs.com
+      VIRTUAL_PORT: 1880
+      LETSENCRYPT_HOST: ccs-ag-williamson.scadadevs.com
+      LETSENCRYPT_EMAIL: twinflameautomation@gmail.com
+
+
+      #  nodehannakrampf:
+      #    container_name: nrKrampf
+      #    build: ./services/nodered/.
+      #    restart: unless-stopped
+      #    user: "0"
+      #    privileged: true
+      #    env_file: ./services/hannathon-node/nodered.env
+      #    ports:
+      #    - 1880
+      #    - 2080
+      #    networks:
+      #      default:
+      #        ipv4_address: 172.19.0.59
+      #        aliases:
+      #          - hanna_Krampf_nr
+      #      backend:
+      #        ipv4_address: 172.30.0.59
+      #        aliases:
+      #          - hanna_krampf_nr
+      #    volumes:
+      #      - ./volumes/nrKrampf/data:/data
+      #    environment:
+      #      VIRTUAL_HOST: hannathon.krampf.scadadevs.com
+      #      VIRTUAL_PORT: 1880
+      #      LETSENCRYPT_HOST: hannathon.krampf.scadadevs.com
+      #      LETSENCRYPT_EMAIL: twinflameautomation@gmail.com
+
+
+  wiliamsonInflux:
+    container_name: dbWilliamson
+    image: "influxdb:latest"
+    restart: unless-stopped
+    ports:
+      - 8086
+      - 8083
+      - 2003
+    env_file:
+      - ./services/hannathon-db/influxdb.env
+    volumes:
+      - ./volumes/dbWilliamson/data:/var/lib/influxdb
+      - ./backups/dbWilliamson/db:/var/lib/influxdb/backup
+    networks:
+      default:
+        ipv4_address: 172.19.0.40
+        aliases:
+          - ag_williamson_db
+      backend:
+        ipv4_address: 172.30.0.40
+        aliases:
+          - ag_williamson_db
+
+networks:
+  default:
+    external:
+      name: nginx-proxy
+  backend:
+    external:
+      name: container-comm 
+

@@ -1,0 +1,35 @@
+{
+  "opcua-iiot-contrib": {
+    "label": {
+      "port": "Port",
+      "endpoint": "Endpoint",
+      "showActivities": "Show Activities",
+      "showErrors": "Show Errors",
+      "stateLogEnabled": "Log State",
+      "statusLog": "Log Status",
+      "securityPolicy": "Security Policies",
+      "securityMode": "Security Modes",
+      "addButton": "Add",
+      "removeButton": "Remove",
+      "maxAllowedSessionNumber": "Max Sessions",
+      "maxConnectionsPerEndpoint": "Max Connections Per Endpoint",
+      "maxAllowedSubscriptionNumber": "Max Subscriptions",
+      "alternateHostname": "Alternate Hostname",
+      "allowAnonymous": "Allow Anonymous",
+      "isAuditing": "Auditing",
+      "publicCertificateFile": "Public",
+      "privateCertificateFile": "Private",
+      "certificateFiles": "Certificate Files",
+      "xmlsets": "XML-Sets",
+      "asoDemo": "ASO Demo",
+      "serverDiscovery": "Discovery",
+      "maxNodesPerRead": "Max per Read",
+      "maxNodesPerBrowse": "Max per Browse"
+    },
+    "tabs-label": {
+      "users": "Users & Sets",
+      "settings": "Settings",
+      "security": "Security"
+    }
+  }
+}

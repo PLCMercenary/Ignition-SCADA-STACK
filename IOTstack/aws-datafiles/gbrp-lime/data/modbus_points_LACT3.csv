@@ -1,0 +1,19 @@
+reg_address,reg_name,group,bit,point_name,alias_on,alias_off,parse,quantity
+1,Meter #1 Pressure,LACT3_Values,,,,,"[{""func"": ""float32ToNum""}]",2
+3,Meter #1 Temperature,LACT3_Values,,,,,"[{""func"": ""float32ToNum""}]",2
+5,Tank Pressure,LACT3_Values,,,,,"[{""func"": ""float32ToNum""}]",2
+7,Injection Pressure,LACT3_Values,,,,,"[{""func"": ""float32ToNum""}]",2
+9,Current BS&W,LACT3_Values,,,,,"[{""func"": ""float32ToNum""}]",2
+11,Meter #1 IV Flow Rate,LACT3_Values,,,,,"[{""func"": ""float32ToNum""}]",2
+13,Meter #1 Net Standard Flow Rate,LACT3_Values,,,,,"[{""func"": ""float32ToNum""}]",2
+15,Meter #1 Meter Factor,LACT3_Values,,,,,"[{""func"": ""float32ToNum""}]",2
+17,Meter #1 SG @ 60Deg F/DENS@15Deg C,LACT3_Values,,,,,"[{""func"":""float32ToNum""}]",2
+19,Fwd Day Indicated Volume CUR,LACT3_Values,,,,,"[{""func"": ""float32ToNum""}]",2
+21,Fwd Day Net Std Volume PREV,LACT3_Values,,,,,"[{""func"": ""float32ToNum""}]",2
+23,Fwd Day Indicated Volume PREV,LACT3_Values,,,,,"[{""func"": ""float32ToNum""}]",2
+25,Fwd Day Standard Volume PREV,LACT3_Values,,,,,"[{""func"": ""float32ToNum""}]",2
+27,Inlet Valve Position,LACT3_Values,,,,,"[{""func"": ""float32ToNum""},{""func"": ""alias"", ""param"":{0:""Fault"",1:""Closed"",2:""Open"",3:""Closing"",4:""Opening"",5:""Undefined""}}]""",2
+29,Meter #1 Cumulative Gross Total,LACT3_Values,,,,,"[{""func"": ""int32ABCD""}]",2
+31,Meter #1 Cumulative NSV Total,LACT3_Values,,,,,"[{""func"": ""int32ABCD""}]",2
+33,Meter #1 Current Second,LACT3_Values,,,,,,1
+34,Tank Level Feet,LACT3_Values,,,,,"[{""func"": ""float32ToNum""}]",2
